@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ToolKit Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* =========================================
+   CSS VARIABLES & RESET
+   ========================================= */
+:root {
+  --bg-primary: #0a0a14;
+  --bg-secondary: #12121f;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-border-hover: rgba(255,255,255,0.2);
+  --text-primary: #f0f0ff;
+  --text-secondary: rgba(240,240,255,0.6);
+  --text-muted: rgba(240,240,255,0.35);
+  --accent1: #7c6af7;
+  --accent2: #f06baa;
+  --accent3: #6bcff0;
+  --accent4: #6bf0b8;
+  --accent5: #f0c46b;
+  --neon-purple: #a855f7;
+  --neon-pink: #ec4899;
+  --neon-cyan: #22d3ee;
+  --gradient-main: linear-gradient(135deg, #0a0a14 0%, #12091f 50%, #0a1420 100%);
+  --gradient-accent: linear-gradient(135deg, #7c6af7, #f06baa);
+  --gradient-card1: linear-gradient(135deg, rgba(124,106,247,0.15), rgba(240,107,170,0.08));
+  --gradient-card2: linear-gradient(135deg, rgba(107,207,240,0.15), rgba(107,240,184,0.08));
+  --gradient-card3: linear-gradient(135deg, rgba(240,196,107,0.15), rgba(240,107,107,0.08));
+  --shadow-glow: 0 0 30px rgba(124,106,247,0.15);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  --blur-glass: blur(16px);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --nav-height: 70px;
+  --topbar-height: 64px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg-primary: #f0f0f8;
+  --bg-secondary: #e8e8f5;
+  --bg-card: rgba(255,255,255,0.7);
+  --bg-card-hover: rgba(255,255,255,0.9);
+  --glass-border: rgba(124,106,247,0.15);
+  --glass-border-hover: rgba(124,106,247,0.3);
+  --text-primary: #1a1a2e;
+  --text-secondary: rgba(26,26,46,0.7);
+  --text-muted: rgba(26,26,46,0.4);
+  --gradient-main: linear-gradient(135deg, #f0f0f8 0%, #e8e0f8 50%, #e0eef8 100%);
+  --shadow-glow: 0 0 30px rgba(124,106,247,0.2);
+  --shadow-card: 0 8px 32px rgba(124,106,247,0.1);
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--gradient-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 20% 20%, rgba(124,106,247,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(240,107,170,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 50%, rgba(107,207,240,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent1); border-radius: 4px; }
+
+/* =========================================
+   SPLASH SCREEN
+   ========================================= */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #07071a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#splash.hidden { opacity: 0; visibility: hidden; }
+.splash-logo {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #7c6af7, #f06baa);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  animation: splashPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 50px rgba(124,106,247,0.5);
+}
+@keyframes splashPulse {
+  0%,100% { transform: scale(1); box-shadow: 0 0 50px rgba(124,106,247,0.5); }
+  50% { transform: scale(1.08); box-shadow: 0 0 80px rgba(240,107,170,0.6); }
+}
+.splash-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7c6af7, #f06baa, #6bcff0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.splash-sub {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 50px;
+}
+.splash-loader {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.splash-loader-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #7c6af7, #f06baa, #6bcff0);
+  border-radius: 3px;
+  animation: loadBar 2.5s ease forwards;
+}
+@keyframes loadBar {
+  0% { width: 0%; }
+  30% { width: 40%; }
+  60% { width: 70%; }
+  80% { width: 85%; }
+  100% { width: 100%; }
+}
+.splash-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+.splash-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent1);
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+.splash-dot:nth-child(2) { animation-delay: 0.2s; background: var(--accent2); }
+.splash-dot:nth-child(3) { animation-delay: 0.4s; background: var(--accent3); }
+@keyframes dotBounce {
+  0%,80%,100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-10px); opacity: 1; }
+}
+
+/* =========================================
+   MAIN APP LAYOUT
+   ========================================= */
+#app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-bottom: var(--nav-height);
+}
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+  background: rgba(10,10,20,0.8);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+}
+[data-theme="light"] .topbar { background: rgba(240,240,248,0.85); }
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.topbar-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--gradient-accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #fff;
+}
+.topbar-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  transition: var(--transition);
+  backdrop-filter: var(--blur-glass);
+}
+.theme-toggle:hover { border-color: var(--accent1); color: var(--accent1); }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: rgba(10,10,20,0.9);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  padding: 0 8px;
+}
+[data-theme="light"] .bottom-nav { background: rgba(240,240,248,0.9); }
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  position: relative;
+}
+.nav-item i {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+.nav-item span {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+.nav-item.active i { color: var(--accent1); }
+.nav-item.active span { color: var(--accent1); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--accent1);
+  border-radius: 3px;
+}
+.nav-item:hover i { color: var(--accent1); transform: translateY(-2px); }
+
+/* =========================================
+   PAGES / SCREENS
+   ========================================= */
+.page {
+  display: none;
+  padding: calc(var(--topbar-height) + 16px) 16px 16px;
+  animation: pageIn 0.35s cubic-bezier(0.4,0,0.2,1);
+  min-height: 100vh;
+}
+.page.active { display: block; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   SEARCH BAR
+   ========================================= */
+.search-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.search-bar {
+  width: 100%;
+  padding: 14px 16px 14px 46px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: var(--blur-glass);
+  transition: var(--transition);
+  outline: none;
+}
+.search-bar::placeholder { color: var(--text-muted); }
+.search-bar:focus {
+  border-color: var(--accent1);
+  box-shadow: 0 0 0 3px rgba(124,106,247,0.12);
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* =========================================
+   SECTION LABELS
+   ========================================= */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 20px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+/* =========================================
+   TOOL GRID & CARDS
+   ========================================= */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media (min-width: 480px) { .tool-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px) { .tool-grid { grid-template-columns: repeat(4, 1fr); } }
+.tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 18px 12px 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+.tool-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-gradient, var(--gradient-card1));
+  opacity: 0;
+  transition: var(--transition);
+}
+.tool-card:hover {
+  border-color: var(--glass-border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), var(--shadow-glow);
+}
+.tool-card:hover::before { opacity: 1; }
+.tool-card:active { transform: scale(0.96); }
+.card-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 1.4rem;
+  position: relative;
+}
+.card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.card-fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+  z-index: 2;
+}
+.card-fav.active { color: #f06baa; }
+.card-fav:hover { transform: scale(1.2); }
+
+/* Color themes for cards */
+.c-purple .card-icon-wrap { background: rgba(124,106,247,0.18); color: #a78bfa; }
+.c-pink .card-icon-wrap { background: rgba(240,107,170,0.18); color: #f472b6; }
+.c-cyan .card-icon-wrap { background: rgba(107,207,240,0.18); color: #38bdf8; }
+.c-green .card-icon-wrap { background: rgba(107,240,184,0.18); color: #34d399; }
+.c-amber .card-icon-wrap { background: rgba(240,196,107,0.18); color: #fbbf24; }
+.c-red .card-icon-wrap { background: rgba(240,107,107,0.18); color: #f87171; }
+.c-indigo .card-icon-wrap { background: rgba(99,102,241,0.18); color: #818cf8; }
+.c-orange .card-icon-wrap { background: rgba(251,146,60,0.18); color: #fb923c; }
+.c-teal .card-icon-wrap { background: rgba(20,184,166,0.18); color: #2dd4bf; }
+
+/* =========================================
+   GLASS PANELS (Tool Screens)
+   ========================================= */
+.glass-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+}
+.panel-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* =========================================
+   FORM ELEMENTS
+   ========================================= */
+.input-group {
+  margin-bottom: 14px;
+}
+.input-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.input-field {
+  width: 100%;
+  padding: 13px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  transition: var(--transition);
+}
+[data-theme="light"] .input-field { background: rgba(255,255,255,0.7); }
+.input-field:focus {
+  border-color: var(--accent1);
+  box-shadow: 0 0 0 3px rgba(124,106,247,0.12);
+}
+.input-field option { background: var(--bg-secondary); }
+.input-row { display: flex; gap: 10px; }
+.input-row .input-group { flex: 1; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: var(--radius-sm);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.1);
+  opacity: 0;
+  transition: var(--transition);
+}
+.btn:hover::after { opacity: 1; }
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: var(--gradient-accent);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(124,106,247,0.35);
+  width: 100%;
+}
+.btn-primary:hover { box-shadow: 0 6px 30px rgba(124,106,247,0.5); transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: var(--blur-glass);
+}
+.btn-secondary:hover { border-color: var(--accent1); }
+.btn-sm { padding: 9px 14px; font-size: 0.78rem; }
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* RESULT BOX */
+.result-box {
+  background: rgba(124,106,247,0.08);
+  border: 1px solid rgba(124,106,247,0.2);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: 14px;
+  display: none;
+}
+.result-box.show { display: block; }
+.result-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent1);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.result-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.result-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* =========================================
+   BACK BUTTON
+   ========================================= */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: var(--transition);
+  width: fit-content;
+}
+.back-btn:hover { color: var(--accent1); }
+.back-btn i { font-size: 1rem; }
+
+/* =========================================
+   CALCULATOR
+   ========================================= */
+.calc-display {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 20px 16px 14px;
+  margin-bottom: 14px;
+  text-align: right;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+[data-theme="light"] .calc-display { background: rgba(0,0,0,0.06); }
+.calc-expression {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  min-height: 20px;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+.calc-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.calc-btn {
+  padding: 16px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+}
+.calc-btn:hover { background: var(--bg-card-hover); border-color: var(--glass-border-hover); transform: scale(1.04); }
+.calc-btn:active { transform: scale(0.96); }
+.calc-btn.op { color: var(--accent1); border-color: rgba(124,106,247,0.25); background: rgba(124,106,247,0.08); }
+.calc-btn.eq { background: var(--gradient-accent); color: #fff; border: none; box-shadow: 0 4px 20px rgba(124,106,247,0.3); }
+.calc-btn.clear { color: var(--accent2); border-color: rgba(240,107,170,0.25); background: rgba(240,107,170,0.08); }
+.calc-btn.func { font-size: 0.78rem; color: var(--accent3); border-color: rgba(107,207,240,0.25); background: rgba(107,207,240,0.08); }
+.calc-btn.span2 { grid-column: span 2; }
+.sci-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.sci-tab {
+  flex: 1;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.sci-tab.active { background: rgba(124,106,247,0.15); border-color: var(--accent1); color: var(--accent1); }
+
+/* =========================================
+   STOPWATCH / TIMER
+   ========================================= */
+.time-display {
+  font-size: 3.2rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  padding: 20px 0;
+}
+.time-display .ms { font-size: 1.6rem; color: var(--accent1); }
+.timer-laps {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-top: 12px;
+}
+.lap-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--glass-border);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.lap-item:last-child { border-bottom: none; }
+
+/* =========================================
+   PASSWORD GENERATOR
+   ========================================= */
+.pass-display {
+  position: relative;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 50px 14px 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  color: var(--accent4);
+  word-break: break-all;
+  min-height: 52px;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.copy-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+.copy-btn:hover { color: var(--accent1); }
+.strength-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+.strength-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: var(--transition);
+}
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent1);
+  cursor: pointer;
+}
+.range-wrap { display: flex; align-items: center; gap: 12px; }
+.range-val {
+  min-width: 36px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--accent1);
+}
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  background: var(--glass-border);
+  border-radius: 4px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124,106,247,0.4);
+}
+
+/* =========================================
+   QR CODE
+   ========================================= */
+.qr-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+.qr-container img {
+  border-radius: var(--radius-sm);
+  max-width: 200px;
+  border: 3px solid var(--glass-border);
+}
+.qr-scanner-mock {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border: 2px solid var(--accent1);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: rgba(0,0,0,0.4);
+}
+.qr-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+  animation: scanLine 2s linear infinite;
+  box-shadow: 0 0 8px var(--accent1);
+}
+@keyframes scanLine {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+.qr-corners::before, .qr-corners::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--accent1);
+  border-style: solid;
+}
+.qr-corners::before { top: 4px; left: 4px; border-width: 3px 0 0 3px; }
+.qr-corners::after { bottom: 4px; right: 4px; border-width: 0 3px 3px 0; }
+
+/* =========================================
+   FLASHLIGHT
+   ========================================= */
+.flashlight-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 20px auto;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 3px solid var(--glass-border);
+  background: var(--bg-card);
+  position: relative;
+}
+.flashlight-btn.on {
+  background: rgba(255,240,100,0.15);
+  border-color: #fde68a;
+  color: #fde68a;
+  box-shadow: 0 0 60px rgba(253,230,138,0.5), 0 0 120px rgba(253,230,138,0.2);
+  animation: flashGlow 1.5s ease-in-out infinite;
+}
+.flashlight-btn.off { color: var(--text-muted); }
+@keyframes flashGlow {
+  0%,100% { box-shadow: 0 0 60px rgba(253,230,138,0.5), 0 0 120px rgba(253,230,138,0.2); }
+  50% { box-shadow: 0 0 80px rgba(253,230,138,0.7), 0 0 160px rgba(253,230,138,0.3); }
+}
+.flashlight-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(253,230,138,0.03);
+  pointer-events: none;
+  transition: var(--transition);
+  z-index: 0;
+}
+.flashlight-overlay.on { background: rgba(253,230,138,0.06); }
+
+/* =========================================
+   BATTERY STATUS
+   ========================================= */
+.battery-icon-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  flex-direction: column;
+  gap: 16px;
+}
+.battery-svg {
+  width: 120px;
+  height: 60px;
+}
+.battery-level-text {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent4);
+}
+.battery-status-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* =========================================
+   TEXT TOOLS
+   ========================================= */
+.text-area {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  resize: vertical;
+  outline: none;
+  transition: var(--transition);
+  line-height: 1.6;
+}
+[data-theme="light"] .text-area { background: rgba(255,255,255,0.7); }
+.text-area:focus { border-color: var(--accent1); box-shadow: 0 0 0 3px rgba(124,106,247,0.12); }
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+.stat-item {
+  background: rgba(124,106,247,0.06);
+  border: 1px solid rgba(124,106,247,0.15);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.stat-val { font-size: 1.6rem; font-weight: 800; color: var(--accent1); }
+.stat-lbl { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+/* =========================================
+   TOAST NOTIFICATIONS
+   ========================================= */
+.toast-container {
+  position: fixed;
+  top: 76px;
+  right: 16px;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 200px;
+  max-width: 280px;
+  backdrop-filter: var(--blur-glass);
+  animation: toastIn 0.35s cubic-bezier(0.4,0,0.2,1), toastOut 0.35s cubic-bezier(0.4,0,0.2,1) 2.5s forwards;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  pointer-events: all;
+}
+.toast i { font-size: 1rem; }
+.toast.success { border-color: rgba(107,240,184,0.3); }
+.toast.success i { color: var(--accent4); }
+.toast.error { border-color: rgba(240,107,107,0.3); }
+.toast.error i { color: #f87171; }
+.toast.info { border-color: rgba(124,106,247,0.3); }
+.toast.info i { color: var(--accent1); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(50px); }
+}
+
+/* =========================================
+   FAVORITES PAGE
+   ========================================= */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+}
+.empty-state i {
+  font-size: 3rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: block;
+}
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* =========================================
+   UNIT CONVERTER TABS
+   ========================================= */
+.tab-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.tab-scroll::-webkit-scrollbar { display: none; }
+.tab-pill {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Montserrat', sans-serif;
+}
+.tab-pill.active { background: rgba(124,106,247,0.15); border-color: var(--accent1); color: var(--accent1); }
+
+/* =========================================
+   TIMER INPUT
+   ========================================= */
+.timer-inputs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.timer-input-box {
+  text-align: center;
+}
+.timer-input-box input {
+  width: 72px;
+  padding: 12px 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  outline: none;
+}
+.timer-input-box span {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   PROGRESS RING (for BMI visual)
+   ========================================= */
+.bmi-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+.bmi-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.bmi-ring svg {
+  transform: rotate(-90deg);
+}
+.bmi-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.bmi-ring-val { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+.bmi-ring-lbl { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* =========================================
+   HEADER BADGE
+   ========================================= */
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(124,106,247,0.12);
+  border: 1px solid rgba(124,106,247,0.2);
+  color: var(--accent1);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 16px;
+}
+
+/* =========================================
+   TOOL SCREEN WRAPPER
+   ========================================= */
+#tool-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--gradient-main);
+  overflow-y: auto;
+  animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+#tool-screen.active { display: block; }
+@keyframes slideUp {
+  from { transform: translateY(60px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.tool-screen-inner {
+  padding: calc(var(--topbar-height) + 8px) 16px 80px;
+}
+.tool-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+  background: rgba(10,10,20,0.88);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 201;
+}
+[data-theme="light"] .tool-topbar { background: rgba(240,240,248,0.9); }
+.tool-topbar-back {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+.tool-topbar-back:hover { border-color: var(--accent1); color: var(--accent1); }
+.tool-topbar-info { flex: 1; }
+.tool-topbar-name { font-size: 0.95rem; font-weight: 700; }
+.tool-topbar-cat { font-size: 0.68rem; color: var(--text-muted); }
+
+/* Animated gradient border for special elements */
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: var(--gradient-accent);
+  z-index: -1;
+  opacity: 0.5;
+  filter: blur(4px);
+}
+
+/* =========================================
+   LOAN EMI BREAKDOWN
+   ========================================= */
+.emi-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.emi-item {
+  background: rgba(124,106,247,0.06);
+  border: 1px solid rgba(124,106,247,0.12);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+}
+.emi-val { font-size: 1rem; font-weight: 800; color: var(--text-primary); }
+.emi-lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* Misc */
+.divider { height: 1px; background: var(--glass-border); margin: 16px 0; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.text-accent { color: var(--accent1); }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo">🛠️</div>
+  <div class="splash-title">ToolKit Pro</div>
+  <div class="splash-sub">All-in-One Utility Suite</div>
+  <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- TOOL SCREEN (full-screen overlay for individual tools) -->
+<div id="tool-screen">
+  <div class="tool-topbar">
+    <div class="tool-topbar-back" onclick="closeTool()"><i class="fa fa-arrow-left"></i></div>
+    <div class="tool-topbar-info">
+      <div class="tool-topbar-name" id="toolTopbarName">Tool</div>
+      <div class="tool-topbar-cat" id="toolTopbarCat">Category</div>
+    </div>
+    <div class="theme-toggle" onclick="toggleTheme()"><i class="fa fa-circle-half-stroke"></i></div>
+  </div>
+  <div class="tool-screen-inner" id="toolContent"></div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none;">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">🛠️</div>
+      <div class="topbar-title">ToolKit Pro</div>
+    </div>
+    <div class="topbar-actions">
+      <div class="theme-toggle" onclick="toggleTheme()"><i class="fa fa-circle-half-stroke"></i></div>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div class="search-wrap">
+      <i class="fa fa-search search-icon"></i>
+      <input class="search-bar" id="searchBar" type="text" placeholder="Search tools..." oninput="searchTools(this.value)">
+    </div>
+
+    <!-- Favorites strip -->
+    <div id="favSection" style="display:none;">
+      <div class="section-label"><i class="fa fa-heart text-accent"></i> Favorites</div>
+      <div class="tool-grid" id="favGrid"></div>
+    </div>
+
+    <div class="section-label"><i class="fa fa-th-large text-accent"></i> All Tools</div>
+    <div class="tool-grid" id="allGrid"></div>
+    <div id="noResults" style="display:none;" class="empty-state">
+      <i class="fa fa-search"></i>
+      <p>No tools found</p>
+    </div>
+  </div>
+
+  <!-- FAVORITES PAGE -->
+  <div class="page" id="page-favs">
+    <div class="section-label"><i class="fa fa-heart text-accent"></i> My Favorites</div>
+    <div class="tool-grid" id="favPageGrid"></div>
+    <div id="favEmpty" class="empty-state">
+      <i class="fa fa-heart-crack"></i>
+      <p>No favorites yet.<br>Tap the ♥ on any tool to save it.</p>
+    </div>
+  </div>
+
+  <!-- CATEGORIES PAGE -->
+  <div class="page" id="page-cats">
+    <div class="section-label"><i class="fa fa-grid-2 text-accent"></i> Categories</div>
+    <div id="catList"></div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="page" id="page-settings">
+    <div class="section-label"><i class="fa fa-gear text-accent"></i> Settings</div>
+    <div class="glass-panel">
+      <div class="panel-title"><i class="fa fa-moon" style="color:var(--accent1)"></i> Appearance</div>
+      <div class="divider"></div>
+      <div class="flex-between mt-8">
+        <div>
+          <div style="font-size:0.88rem;font-weight:600;">Dark Mode</div>
+          <div style="font-size:0.72rem;color:var(--text-muted);">Save battery & reduce eye strain</div>
+        </div>
+        <div class="theme-toggle" onclick="toggleTheme()" style="width:52px;height:28px;border-radius:20px;padding:3px;">
+          <div id="themeToggleKnob" style="width:22px;height:22px;background:var(--gradient-accent);border-radius:50%;transition:var(--transition);margin-left:0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="glass-panel">
+      <div class="panel-title"><i class="fa fa-info-circle" style="color:var(--accent3)"></i> About</div>
+      <div class="divider"></div>
+      <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin-top:8px;">
+        <b>ToolKit Pro</b> — v2.0<br>
+        An all-in-one utility suite featuring calculators, converters, text tools, security utilities, and smart tools.<br><br>
+         </div>
+    </div>
+    <div class="glass-panel">
+      <div class="panel-title"><i class="fa fa-trash-alt" style="color:var(--accent2)"></i> Data</div>
+      <div class="divider"></div>
+      <button class="btn btn-secondary mt-8" onclick="clearFavorites()" style="width:100%;">
+        <i class="fa fa-heart-crack"></i> Clear All Favorites
+      </button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('home',this)">
+      <i class="fa fa-home"></i><span>Home</span>
+    </div>
+    <div class="nav-item" onclick="showPage('favs',this)">
+      <i class="fa fa-heart"></i><span>Saved</span>
+    </div>
+    <div class="nav-item" onclick="showPage('cats',this)">
+      <i class="fa fa-th-large"></i><span>Browse</span>
+    </div>
+    <div class="nav-item" onclick="showPage('settings',this)">
+      <i class="fa fa-gear"></i><span>Settings</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================
+   TOOL REGISTRY
+   ========================================== */
+const TOOLS = [
+  // CALCULATORS
+  { id:'calc-basic', name:'Calculator', sub:'Basic & Scientific', icon:'fa-calculator', color:'c-purple', cat:'Calculators' },
+  { id:'calc-age',   name:'Age Calculator', sub:'From date of birth', icon:'fa-birthday-cake', color:'c-pink', cat:'Calculators' },
+  { id:'calc-bmi',   name:'BMI Calculator', sub:'Body Mass Index', icon:'fa-weight-scale', color:'c-cyan', cat:'Calculators' },
+  { id:'calc-pct',   name:'Percentage Calc', sub:'Percent & ratios', icon:'fa-percent', color:'c-amber', cat:'Calculators' },
+  { id:'calc-emi',   name:'Loan EMI Calc', sub:'EMI & interest', icon:'fa-landmark', color:'c-green', cat:'Calculators' },
+  // CONVERTERS
+  { id:'conv-unit',  name:'Unit Converter', sub:'Length, weight, temp', icon:'fa-ruler', color:'c-indigo', cat:'Converters' },
+  { id:'conv-data',  name:'Data Converter', sub:'KB, MB, GB, TB', icon:'fa-database', color:'c-teal', cat:'Converters' },
+  // TEXT TOOLS
+  { id:'text-count', name:'Word Counter', sub:'Words & characters', icon:'fa-font', color:'c-orange', cat:'Text Tools' },
+  { id:'text-case',  name:'Case Converter', sub:'Upper / lower / title', icon:'fa-text-height', color:'c-red', cat:'Text Tools' },
+  // MOBILE
+  { id:'util-flash', name:'Flashlight', sub:'Toggle light effect', icon:'fa-bolt', color:'c-amber', cat:'Utilities' },
+  { id:'util-batt',  name:'Battery Status', sub:'Live battery info', icon:'fa-battery-three-quarters', color:'c-green', cat:'Utilities' },
+  // SECURITY
+  { id:'sec-pass',   name:'Password Gen', sub:'Secure passwords', icon:'fa-key', color:'c-purple', cat:'Security' },
+  // SMART TOOLS
+  { id:'smart-qrgen',name:'QR Generator', sub:'Generate QR codes', icon:'fa-qrcode', color:'c-cyan', cat:'Smart Tools' },
+  { id:'smart-qrscan',name:'QR Scanner', sub:'Scan QR codes', icon:'fa-camera', color:'c-pink', cat:'Smart Tools' },
+  { id:'smart-sw',   name:'Stopwatch', sub:'Lap timer', icon:'fa-stopwatch', color:'c-green', cat:'Smart Tools' },
+  { id:'smart-timer',name:'Countdown Timer', sub:'Set & countdown', icon:'fa-hourglass-half', color:'c-indigo', cat:'Smart Tools' },
+];
+
+const CATEGORIES = [...new Set(TOOLS.map(t => t.cat))];
+
+/* ==========================================
+   STATE
+   ========================================== */
+let favorites = JSON.parse(localStorage.getItem('tk_favs') || '[]');
+let isDark = localStorage.getItem('tk_theme') !== 'light';
+let stopwatchInterval = null, stopwatchMs = 0, swRunning = false;
+let timerInterval = null, timerRemaining = 0, timerRunning = false;
+let flashOn = false;
+let currentCalcMode = 'basic';
+let calcExpr = '', calcDisplay = '0', calcNewNum = true;
+
+/* ==========================================
+   INIT
+   ========================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  renderGrid();
+  renderCategories();
+  renderFavPage();
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    document.getElementById('app').style.display = 'block';
+  }, 2800);
+});
+
+/* ==========================================
+   THEME
+   ========================================== */
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('tk_theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+}
+
+/* ==========================================
+   PAGE NAVIGATION
+   ========================================== */
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (name === 'favs') renderFavPage();
+}
+
+/* ==========================================
+   RENDER TOOL CARD
+   ========================================== */
+function makeCard(tool, showRemove) {
+  const isFav = favorites.includes(tool.id);
+  const div = document.createElement('div');
+  div.className = `tool-card ${tool.color}`;
+  div.innerHTML = `
+    <div class="card-fav ${isFav?'active':''}" onclick="toggleFav(event,'${tool.id}')">
+      <i class="fa ${isFav?'fa-heart':'fa-heart'}" id="fav-${tool.id}"></i>
+    </div>
+    <div class="card-icon-wrap"><i class="fa ${tool.icon}"></i></div>
+    <div class="card-title">${tool.name}</div>
+  `;
+  div.onclick = (e) => {
+    if (e.target.closest('.card-fav')) return;
+    openTool(tool.id);
+  };
+  return div;
+}
+
+function renderGrid(filter='') {
+  const allGrid = document.getElementById('allGrid');
+  const favGrid = document.getElementById('favGrid');
+  const favSection = document.getElementById('favSection');
+  allGrid.innerHTML = '';
+  favGrid.innerHTML = '';
+
+  const filtered = TOOLS.filter(t =>
+    !filter || t.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  if (filtered.length === 0) {
+    document.getElementById('noResults').style.display = 'block';
+    allGrid.style.display = 'none';
+  } else {
+    document.getElementById('noResults').style.display = 'none';
+    allGrid.style.display = 'grid';
+    filtered.forEach(t => allGrid.appendChild(makeCard(t)));
+  }
+
+  const favTools = TOOLS.filter(t => favorites.includes(t.id));
+  if (favTools.length > 0 && !filter) {
+    favSection.style.display = 'block';
+    favTools.forEach(t => favGrid.appendChild(makeCard(t)));
+  } else {
+    favSection.style.display = 'none';
+  }
+}
+
+function renderFavPage() {
+  const grid = document.getElementById('favPageGrid');
+  const empty = document.getElementById('favEmpty');
+  grid.innerHTML = '';
+  const favTools = TOOLS.filter(t => favorites.includes(t.id));
+  if (favTools.length === 0) {
+    empty.style.display = 'block';
+    grid.style.display = 'none';
+  } else {
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+    favTools.forEach(t => grid.appendChild(makeCard(t)));
+  }
+}
+
+function renderCategories() {
+  const container = document.getElementById('catList');
+  container.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const catTools = TOOLS.filter(t => t.cat === cat);
+    const section = document.createElement('div');
+    section.innerHTML = `<div class="section-label">${cat}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'tool-grid';
+    grid.style.marginBottom = '20px';
+    catTools.forEach(t => grid.appendChild(makeCard(t)));
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+/* ==========================================
+   FAVORITES
+   ========================================== */
+function toggleFav(e, id) {
+  e.stopPropagation();
+  if (favorites.includes(id)) {
+    favorites = favorites.filter(f => f !== id);
+    showToast('Removed from favorites', 'info', 'fa-heart-crack');
+  } else {
+    favorites.push(id);
+    showToast('Added to favorites!', 'success', 'fa-heart');
+  }
+  localStorage.setItem('tk_favs', JSON.stringify(favorites));
+  renderGrid(document.getElementById('searchBar').value);
+  renderFavPage();
+  renderCategories();
+}
+
+function clearFavorites() {
+  favorites = [];
+  localStorage.setItem('tk_favs', JSON.stringify(favorites));
+  renderGrid();
+  renderFavPage();
+  renderCategories();
+  showToast('Favorites cleared', 'info', 'fa-trash');
+}
+
+/* ==========================================
+   SEARCH
+   ========================================== */
+function searchTools(val) {
+  renderGrid(val);
+}
+
+/* ==========================================
+   TOAST
+   ========================================== */
+function showToast(msg, type='info', icon='fa-info-circle') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fa ${icon}"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ==========================================
+   OPEN / CLOSE TOOL
+   ========================================== */
+function openTool(id) {
+  const tool = TOOLS.find(t => t.id === id);
+  if (!tool) return;
+  document.getElementById('toolTopbarName').textContent = tool.name;
+  document.getElementById('toolTopbarCat').textContent = tool.cat;
+  document.getElementById('toolContent').innerHTML = buildTool(id);
+  document.getElementById('tool-screen').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  initTool(id);
+}
+
+function closeTool() {
+  document.getElementById('tool-screen').classList.remove('active');
+  document.body.style.overflow = '';
+  // Stop any running intervals
+  if (stopwatchInterval) clearInterval(stopwatchInterval);
+  if (timerInterval) clearInterval(timerInterval);
+}
+
+/* ==========================================
+   BUILD TOOL HTML
+   ========================================== */
+function buildTool(id) {
+  switch(id) {
+    case 'calc-basic': return buildCalc();
+    case 'calc-age': return buildAge();
+    case 'calc-bmi': return buildBMI();
+    case 'calc-pct': return buildPct();
+    case 'calc-emi': return buildEMI();
+    case 'conv-unit': return buildUnitConv();
+    case 'conv-data': return buildDataConv();
+    case 'text-count': return buildWordCount();
+    case 'text-case': return buildCaseConv();
+    case 'util-flash': return buildFlashlight();
+    case 'util-batt': return buildBattery();
+    case 'sec-pass': return buildPassGen();
+    case 'smart-qrgen': return buildQRGen();
+    case 'smart-qrscan': return buildQRScan();
+    case 'smart-sw': return buildStopwatch();
+    case 'smart-timer': return buildTimer();
+    default: return '<p>Tool not found</p>';
+  }
+}
+
+/* ==========================================
+   CALCULATOR
+   ========================================== */
+function buildCalc() {
+  return `
+<div class="sci-toggle">
+  <div class="sci-tab active" id="tab-basic" onclick="switchCalcMode('basic')">Basic</div>
+  <div class="sci-tab" id="tab-sci" onclick="switchCalcMode('sci')">Scientific</div>
+</div>
+<div class="glass-panel" style="padding:16px;">
+  <div class="calc-display">
+    <div class="calc-expression" id="calcExpr"></div>
+    <div class="calc-value" id="calcVal">0</div>
+  </div>
+  <div class="calc-grid" id="basicGrid">
+    ${makeCalcBtn('C','clear')+''+makeCalcBtn('+/-','op')+''+makeCalcBtn('%','op')+''+makeCalcBtn('÷','op eq-like')}
+    ${makeCalcBtn('7','')+''+makeCalcBtn('8','')+''+makeCalcBtn('9','')+''+makeCalcBtn('×','op')}
+    ${makeCalcBtn('4','')+''+makeCalcBtn('5','')+''+makeCalcBtn('6','')+''+makeCalcBtn('−','op')}
+    ${makeCalcBtn('1','')+''+makeCalcBtn('2','')+''+makeCalcBtn('3','')+''+makeCalcBtn('+','op')}
+    ${makeCalcBtn('0','span2')+''+makeCalcBtn('.','')+''+makeCalcBtn('=','eq')}
+  </div>
+  <div class="calc-grid" id="sciGrid" style="display:none;margin-top:8px;">
+    ${makeCalcBtn('sin','func')+''+makeCalcBtn('cos','func')+''+makeCalcBtn('tan','func')+''+makeCalcBtn('log','func')}
+    ${makeCalcBtn('√','func')+''+makeCalcBtn('x²','func')+''+makeCalcBtn('π','func')+''+makeCalcBtn('e','func')}
+    ${makeCalcBtn('(','op')+''+makeCalcBtn(')','op')+''+makeCalcBtn('⌫','clear')+''+makeCalcBtn('AC','clear')}
+  </div>
+</div>`;
+}
+function makeCalcBtn(label, cls) {
+  return `<button class="calc-btn ${cls}" onclick="calcPress('${label}')">${label}</button>`;
+}
+function switchCalcMode(mode) {
+  currentCalcMode = mode;
+  document.getElementById('tab-basic').className = 'sci-tab' + (mode==='basic'?' active':'');
+  document.getElementById('tab-sci').className = 'sci-tab' + (mode==='sci'?' active':'');
+  document.getElementById('basicGrid').style.display = mode==='basic'?'grid':'none';
+  document.getElementById('sciGrid').style.display = mode==='sci'?'grid':'none';
+}
+function calcPress(key) {
+  const display = document.getElementById('calcVal');
+  const exprEl = document.getElementById('calcExpr');
+  if (key === 'C' || key === 'AC') {
+    calcExpr = ''; calcDisplay = '0'; calcNewNum = true;
+    display.textContent = '0'; exprEl.textContent = ''; return;
+  }
+  if (key === '⌫') {
+    calcDisplay = calcDisplay.length > 1 ? calcDisplay.slice(0,-1) : '0';
+    display.textContent = calcDisplay; return;
+  }
+  if (key === '=') {
+    try {
+      let expr = calcExpr + calcDisplay;
+      expr = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+      exprEl.textContent = expr + ' =';
+      calcDisplay = String(parseFloat(eval(expr).toFixed(10)));
+      calcExpr = ''; calcNewNum = true;
+      display.textContent = calcDisplay;
+    } catch(e) { display.textContent = 'Error'; }
+    return;
+  }
+  if (key === '+/-') { calcDisplay = calcDisplay.startsWith('-') ? calcDisplay.slice(1) : '-' + calcDisplay; display.textContent = calcDisplay; return; }
+  if (key === '%') { calcDisplay = String(parseFloat(calcDisplay)/100); display.textContent = calcDisplay; return; }
+  if (key === 'π') { calcDisplay = String(Math.PI.toFixed(8)); calcNewNum = false; display.textContent = calcDisplay; return; }
+  if (key === 'e') { calcDisplay = String(Math.E.toFixed(8)); calcNewNum = false; display.textContent = calcDisplay; return; }
+  if (key === 'sin') { calcDisplay = String(Math.sin(parseFloat(calcDisplay) * Math.PI/180).toFixed(8)); display.textContent = calcDisplay; return; }
+  if (key === 'cos') { calcDisplay = String(Math.cos(parseFloat(calcDisplay) * Math.PI/180).toFixed(8)); display.textContent = calcDisplay; return; }
+  if (key === 'tan') { calcDisplay = String(Math.tan(parseFloat(calcDisplay) * Math.PI/180).toFixed(8)); display.textContent = calcDisplay; return; }
+  if (key === 'log') { calcDisplay = String(Math.log10(parseFloat(calcDisplay)).toFixed(8)); display.textContent = calcDisplay; return; }
+  if (key === '√') { calcDisplay = String(Math.sqrt(parseFloat(calcDisplay)).toFixed(8)); display.textContent = calcDisplay; return; }
+  if (key === 'x²') { calcDisplay = String(Math.pow(parseFloat(calcDisplay),2)); display.textContent = calcDisplay; return; }
+  if (['+','−','×','÷','(',')'].includes(key)) {
+    calcExpr += calcDisplay + key; calcDisplay = '0'; calcNewNum = true;
+    exprEl.textContent = calcExpr; display.textContent = '0'; return;
+  }
+  if (key === '.') {
+    if (!calcDisplay.includes('.')) calcDisplay += '.';
+    display.textContent = calcDisplay; return;
+  }
+  if (calcNewNum || calcDisplay === '0') { calcDisplay = key; calcNewNum = false; }
+  else { calcDisplay += key; }
+  display.textContent = calcDisplay;
+}
+
+/* ==========================================
+   AGE CALCULATOR
+   ========================================== */
+function buildAge() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-birthday-cake" style="color:var(--accent2)"></i> Age Calculator</div>
+  <div class="panel-sub">Enter your date of birth to calculate exact age</div>
+  <div class="input-group">
+    <label class="input-label">Date of Birth</label>
+    <input class="input-field" type="date" id="ageDOB" max="${new Date().toISOString().split('T')[0]}">
+  </div>
+  <button class="btn btn-primary" onclick="calcAge()"><i class="fa fa-calculator"></i> Calculate Age</button>
+  <div class="result-box" id="ageResult">
+    <div class="result-label">Your Age</div>
+    <div class="result-value" id="ageYears"></div>
+    <div class="result-sub" id="ageSub"></div>
+    <div class="divider"></div>
+    <div id="ageDetails" style="font-size:0.8rem;color:var(--text-secondary);line-height:2;"></div>
+  </div>
+</div>`;
+}
+function calcAge() {
+  const dob = document.getElementById('ageDOB').value;
+  if (!dob) { showToast('Please select date of birth','error','fa-exclamation-circle'); return; }
+  const birth = new Date(dob);
+  const now = new Date();
+  let y = now.getFullYear() - birth.getFullYear();
+  let m = now.getMonth() - birth.getMonth();
+  let d = now.getDate() - birth.getDate();
+  if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+  if (m < 0) { y--; m += 12; }
+  const totalDays = Math.floor((now - birth) / 86400000);
+  const totalWeeks = Math.floor(totalDays / 7);
+  const totalMonths = y*12 + m;
+  const totalHours = totalDays * 24;
+  const box = document.getElementById('ageResult');
+  document.getElementById('ageYears').textContent = `${y} Years, ${m} Months, ${d} Days`;
+  document.getElementById('ageSub').textContent = `Born: ${birth.toDateString()}`;
+  document.getElementById('ageDetails').innerHTML = `
+    📅 Total Days: <b>${totalDays.toLocaleString()}</b><br>
+    📆 Total Weeks: <b>${totalWeeks.toLocaleString()}</b><br>
+    🗓 Total Months: <b>${totalMonths.toLocaleString()}</b><br>
+    ⏰ Total Hours: <b>${totalHours.toLocaleString()}</b>
+  `;
+  box.classList.add('show');
+}
+
+/* ==========================================
+   BMI CALCULATOR
+   ========================================== */
+function buildBMI() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-weight-scale" style="color:var(--accent3)"></i> BMI Calculator</div>
+  <div class="panel-sub">Body Mass Index calculator</div>
+  <div class="input-row">
+    <div class="input-group">
+      <label class="input-label">Height (cm)</label>
+      <input class="input-field" type="number" id="bmiH" placeholder="170">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Weight (kg)</label>
+      <input class="input-field" type="number" id="bmiW" placeholder="70">
+    </div>
+  </div>
+  <div class="input-group">
+    <label class="input-label">Age</label>
+    <input class="input-field" type="number" id="bmiA" placeholder="25">
+  </div>
+  <button class="btn btn-primary" onclick="calcBMI()"><i class="fa fa-calculator"></i> Calculate BMI</button>
+  <div class="result-box" id="bmiResult">
+    <div class="bmi-visual">
+      <div class="bmi-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="url(#bmiGrad)" stroke-width="10"
+            stroke-dasharray="314" id="bmiCircle" stroke-dashoffset="314" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="bmiGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7c6af7"/>
+              <stop offset="100%" stop-color="#f06baa"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="bmi-ring-text">
+          <div class="bmi-ring-val" id="bmiVal">--</div>
+          <div class="bmi-ring-lbl">BMI</div>
+        </div>
+      </div>
+    </div>
+    <div class="result-label" id="bmiCat" style="text-align:center;"></div>
+    <div class="result-sub" style="text-align:center;" id="bmiRange"></div>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;">
+      <div style="text-align:center;padding:8px 4px;border-radius:8px;background:rgba(107,207,240,0.1);font-size:0.62rem;color:var(--accent3);">Under<br><b>&lt;18.5</b></div>
+      <div style="text-align:center;padding:8px 4px;border-radius:8px;background:rgba(107,240,184,0.1);font-size:0.62rem;color:var(--accent4);">Normal<br><b>18.5–24.9</b></div>
+      <div style="text-align:center;padding:8px 4px;border-radius:8px;background:rgba(240,196,107,0.1);font-size:0.62rem;color:var(--accent5);">Over<br><b>25–29.9</b></div>
+      <div style="text-align:center;padding:8px 4px;border-radius:8px;background:rgba(240,107,107,0.1);font-size:0.62rem;color:#f87171;">Obese<br><b>≥30</b></div>
+    </div>
+  </div>
+</div>`;
+}
+function calcBMI() {
+  const h = parseFloat(document.getElementById('bmiH').value);
+  const w = parseFloat(document.getElementById('bmiW').value);
+  if (!h||!w||h<=0||w<=0) { showToast('Enter valid height and weight','error','fa-exclamation-circle'); return; }
+  const bmi = w / Math.pow(h/100, 2);
+  let cat, color;
+  if (bmi < 18.5) { cat = 'Underweight'; color = 'var(--accent3)'; }
+  else if (bmi < 25) { cat = 'Normal Weight ✓'; color = 'var(--accent4)'; }
+  else if (bmi < 30) { cat = 'Overweight'; color = 'var(--accent5)'; }
+  else { cat = 'Obese'; color = '#f87171'; }
+  document.getElementById('bmiVal').textContent = bmi.toFixed(1);
+  document.getElementById('bmiCat').textContent = cat;
+  document.getElementById('bmiCat').style.color = color;
+  document.getElementById('bmiRange').textContent = `BMI: ${bmi.toFixed(2)}`;
+  const pct = Math.min((bmi/40)*314, 314);
+  document.getElementById('bmiCircle').style.strokeDashoffset = 314 - pct;
+  document.getElementById('bmiCircle').style.transition = 'stroke-dashoffset 1s ease';
+  document.getElementById('bmiResult').classList.add('show');
+}
+
+/* ==========================================
+   PERCENTAGE CALCULATOR
+   ========================================== */
+function buildPct() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-percent" style="color:var(--accent5)"></i> Percentage Calculator</div>
+  <div class="panel-sub">Multiple percentage calculation modes</div>
+  <div class="tab-scroll" id="pctTabs">
+    <div class="tab-pill active" onclick="switchPct('basic',this)">X% of Y</div>
+    <div class="tab-pill" onclick="switchPct('change',this)">% Change</div>
+    <div class="tab-pill" onclick="switchPct('ratio',this)">X is % of Y</div>
+  </div>
+  <div id="pct-basic">
+    <div class="input-row">
+      <div class="input-group"><label class="input-label">Percentage (%)</label><input class="input-field" type="number" id="pctA" placeholder="25"></div>
+      <div class="input-group"><label class="input-label">Of Number</label><input class="input-field" type="number" id="pctB" placeholder="200"></div>
+    </div>
+    <button class="btn btn-primary" onclick="calcPct('basic')"><i class="fa fa-equals"></i> Calculate</button>
+  </div>
+  <div id="pct-change" style="display:none;">
+    <div class="input-row">
+      <div class="input-group"><label class="input-label">From</label><input class="input-field" type="number" id="pctC" placeholder="100"></div>
+      <div class="input-group"><label class="input-label">To</label><input class="input-field" type="number" id="pctD" placeholder="150"></div>
+    </div>
+    <button class="btn btn-primary" onclick="calcPct('change')"><i class="fa fa-equals"></i> Calculate</button>
+  </div>
+  <div id="pct-ratio" style="display:none;">
+    <div class="input-row">
+      <div class="input-group"><label class="input-label">X (Part)</label><input class="input-field" type="number" id="pctE" placeholder="30"></div>
+      <div class="input-group"><label class="input-label">Y (Whole)</label><input class="input-field" type="number" id="pctF" placeholder="120"></div>
+    </div>
+    <button class="btn btn-primary" onclick="calcPct('ratio')"><i class="fa fa-equals"></i> Calculate</button>
+  </div>
+  <div class="result-box" id="pctResult">
+    <div class="result-label">Result</div>
+    <div class="result-value" id="pctAns"></div>
+    <div class="result-sub" id="pctSub"></div>
+  </div>
+</div>`;
+}
+function switchPct(mode, el) {
+  ['basic','change','ratio'].forEach(m => {
+    document.getElementById('pct-'+m).style.display = m===mode?'block':'none';
+  });
+  document.querySelectorAll('#pctTabs .tab-pill').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pctResult').classList.remove('show');
+}
+function calcPct(mode) {
+  let ans, sub;
+  if (mode==='basic') {
+    const a = parseFloat(document.getElementById('pctA').value);
+    const b = parseFloat(document.getElementById('pctB').value);
+    ans = (a/100)*b; sub = `${a}% of ${b} = ${ans}`;
+  } else if (mode==='change') {
+    const c = parseFloat(document.getElementById('pctC').value);
+    const d = parseFloat(document.getElementById('pctD').value);
+    ans = ((d-c)/Math.abs(c))*100;
+    sub = `${ans>0?'Increase':'Decrease'}: ${Math.abs(ans).toFixed(2)}%`;
+    ans = ans.toFixed(2) + '%';
+  } else {
+    const e = parseFloat(document.getElementById('pctE').value);
+    const f = parseFloat(document.getElementById('pctF').value);
+    ans = (e/f)*100;
+    sub = `${e} is ${ans.toFixed(2)}% of ${f}`;
+    ans = ans.toFixed(2) + '%';
+  }
+  document.getElementById('pctAns').textContent = ans;
+  document.getElementById('pctSub').textContent = sub;
+  document.getElementById('pctResult').classList.add('show');
+}
+
+/* ==========================================
+   EMI CALCULATOR
+   ========================================== */
+function buildEMI() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-landmark" style="color:var(--accent4)"></i> Loan EMI Calculator</div>
+  <div class="panel-sub">Calculate monthly EMI for any loan</div>
+  <div class="input-group"><label class="input-label">Loan Amount (₹)</label><input class="input-field" type="number" id="emiP" placeholder="500000"></div>
+  <div class="input-row">
+    <div class="input-group"><label class="input-label">Rate (% p.a.)</label><input class="input-field" type="number" id="emiR" placeholder="8.5" step="0.1"></div>
+    <div class="input-group"><label class="input-label">Tenure (Years)</label><input class="input-field" type="number" id="emiT" placeholder="5"></div>
+  </div>
+  <button class="btn btn-primary" onclick="calcEMI()"><i class="fa fa-calculator"></i> Calculate EMI</button>
+  <div class="result-box" id="emiResult">
+    <div class="result-label">Monthly EMI</div>
+    <div class="result-value" id="emiAns"></div>
+    <div class="emi-breakdown">
+      <div class="emi-item"><div class="emi-val" id="emiPrincipal"></div><div class="emi-lbl">Principal</div></div>
+      <div class="emi-item"><div class="emi-val" id="emiInterest"></div><div class="emi-lbl">Interest</div></div>
+      <div class="emi-item"><div class="emi-val" id="emiTotal"></div><div class="emi-lbl">Total Pay</div></div>
+    </div>
+  </div>
+</div>`;
+}
+function calcEMI() {
+  const P = parseFloat(document.getElementById('emiP').value);
+  const rAnn = parseFloat(document.getElementById('emiR').value);
+  const T = parseFloat(document.getElementById('emiT').value);
+  if (!P||!rAnn||!T) { showToast('Fill all fields','error','fa-exclamation-circle'); return; }
+  const r = rAnn/12/100;
+  const n = T*12;
+  const emi = P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  const totalPay = emi*n;
+  const totalInt = totalPay - P;
+  const fmt = v => '₹'+Math.round(v).toLocaleString('en-IN');
+  document.getElementById('emiAns').textContent = fmt(emi) + '/mo';
+  document.getElementById('emiPrincipal').textContent = fmt(P);
+  document.getElementById('emiInterest').textContent = fmt(totalInt);
+  document.getElementById('emiTotal').textContent = fmt(totalPay);
+  document.getElementById('emiResult').classList.add('show');
+}
+
+/* ==========================================
+   UNIT CONVERTER
+   ========================================== */
+const unitTypes = {
+  Length: {
+    units: ['Meters','Kilometers','Centimeters','Millimeters','Miles','Yards','Feet','Inches'],
+    base: {Meters:1,Kilometers:0.001,Centimeters:100,Millimeters:1000,Miles:0.000621371,Yards:1.09361,Feet:3.28084,Inches:39.3701}
+  },
+  Weight: {
+    units: ['Kilograms','Grams','Milligrams','Pounds','Ounces','Tons'],
+    base: {Kilograms:1,Grams:1000,Milligrams:1e6,Pounds:2.20462,Ounces:35.274,Tons:0.001}
+  },
+  Temperature: { units: ['Celsius','Fahrenheit','Kelvin'], base: null },
+  Speed: {
+    units: ['m/s','km/h','mph','knots'],
+    base: {'m/s':1,'km/h':3.6,'mph':2.23694,'knots':1.94384}
+  },
+  Area: {
+    units: ['m²','km²','cm²','ft²','acres','hectares'],
+    base: {'m²':1,'km²':1e-6,'cm²':10000,'ft²':10.7639,'acres':0.000247105,'hectares':0.0001}
+  }
+};
+
+function buildUnitConv() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-ruler" style="color:var(--accent1)"></i> Unit Converter</div>
+  <div class="tab-scroll" id="unitTabs">
+    ${Object.keys(unitTypes).map((k,i)=>`<div class="tab-pill ${i===0?'active':''}" onclick="switchUnit('${k}',this)">${k}</div>`).join('')}
+  </div>
+  <div class="input-group">
+    <label class="input-label">Value</label>
+    <input class="input-field" type="number" id="unitVal" placeholder="Enter value" oninput="convertUnit()">
+  </div>
+  <div class="input-row">
+    <div class="input-group">
+      <label class="input-label">From</label>
+      <select class="input-field" id="unitFrom" onchange="convertUnit()"></select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">To</label>
+      <select class="input-field" id="unitTo" onchange="convertUnit()"></select>
+    </div>
+  </div>
+  <div class="result-box show" id="unitResult">
+    <div class="result-label">Result</div>
+    <div class="result-value" id="unitAns">—</div>
+    <div class="result-sub" id="unitSub"></div>
+  </div>
+</div>`;
+}
+let currentUnitType = 'Length';
+function switchUnit(type, el) {
+  currentUnitType = type;
+  document.querySelectorAll('#unitTabs .tab-pill').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const {units} = unitTypes[type];
+  ['unitFrom','unitTo'].forEach((id,i) => {
+    const s = document.getElementById(id);
+    s.innerHTML = units.map(u=>`<option value="${u}">${u}</option>`).join('');
+    s.selectedIndex = i===1&&units.length>1?1:0;
+  });
+  convertUnit();
+}
+function convertUnit() {
+  const val = parseFloat(document.getElementById('unitVal').value);
+  const from = document.getElementById('unitFrom').value;
+  const to = document.getElementById('unitTo').value;
+  if (isNaN(val)) { document.getElementById('unitAns').textContent = '—'; return; }
+  let result;
+  if (currentUnitType === 'Temperature') {
+    let cel;
+    if (from==='Celsius') cel=val;
+    else if (from==='Fahrenheit') cel=(val-32)*5/9;
+    else cel=val-273.15;
+    if (to==='Celsius') result=cel;
+    else if (to==='Fahrenheit') result=cel*9/5+32;
+    else result=cel+273.15;
+  } else {
+    const base = unitTypes[currentUnitType].base;
+    const inBase = val / base[from];
+    result = inBase * base[to];
+  }
+  document.getElementById('unitAns').textContent = +result.toFixed(6) + ' ' + to;
+  document.getElementById('unitSub').textContent = `${val} ${from} = ${+result.toFixed(6)} ${to}`;
+}
+function initUnitConv() {
+  switchUnit('Length', document.querySelector('#unitTabs .tab-pill'));
+}
+
+/* ==========================================
+   DATA CONVERTER
+   ========================================== */
+function buildDataConv() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-database" style="color:var(--accent3)"></i> Data Size Converter</div>
+  <div class="panel-sub">Convert between digital storage units</div>
+  <div class="input-group">
+    <label class="input-label">Value</label>
+    <input class="input-field" type="number" id="dataVal" placeholder="Enter value" oninput="convertData()">
+  </div>
+  <div class="input-group">
+    <label class="input-label">Unit</label>
+    <select class="input-field" id="dataUnit" onchange="convertData()">
+      <option>Bits</option><option>Bytes</option><option selected>Kilobytes (KB)</option>
+      <option>Megabytes (MB)</option><option>Gigabytes (GB)</option><option>Terabytes (TB)</option>
+      <option>Petabytes (PB)</option>
+    </select>
+  </div>
+  <div class="result-box show">
+    <div class="result-label">Converted Values</div>
+    <div id="dataResults" style="font-size:0.82rem;color:var(--text-secondary);line-height:2.2;margin-top:4px;"></div>
+  </div>
+</div>`;
+}
+function convertData() {
+  const val = parseFloat(document.getElementById('dataVal').value);
+  const unit = document.getElementById('dataUnit').value;
+  if (isNaN(val)||val<0) { document.getElementById('dataResults').textContent='—'; return; }
+  const toBytes = {Bits:1/8,Bytes:1,'Kilobytes (KB)':1024,'Megabytes (MB)':1024**2,'Gigabytes (GB)':1024**3,'Terabytes (TB)':1024**4,'Petabytes (PB)':1024**5};
+  const bytes = val * toBytes[unit];
+  const fmt = (v,u) => `<b>${v<0.001?v.toExponential(2):+v.toFixed(4)}</b> ${u}`;
+  document.getElementById('dataResults').innerHTML = [
+    `${fmt(bytes*8,'Bits')}`,
+    `${fmt(bytes,'Bytes')}`,
+    `${fmt(bytes/1024,'KB')}`,
+    `${fmt(bytes/1024**2,'MB')}`,
+    `${fmt(bytes/1024**3,'GB')}`,
+    `${fmt(bytes/1024**4,'TB')}`,
+    `${fmt(bytes/1024**5,'PB')}`
+  ].map(r=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--glass-border);padding:4px 0;">${r}</div>`).join('');
+}
+
+/* ==========================================
+   WORD COUNTER
+   ========================================== */
+function buildWordCount() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-font" style="color:var(--accent5)"></i> Word & Character Counter</div>
+  <div class="panel-sub">Paste or type your text below</div>
+  <div class="input-group">
+    <textarea class="text-area" id="wcText" placeholder="Start typing or paste text here..." oninput="updateWordCount()" style="min-height:160px;"></textarea>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-item"><div class="stat-val" id="wcWords">0</div><div class="stat-lbl">Words</div></div>
+    <div class="stat-item"><div class="stat-val" id="wcChars">0</div><div class="stat-lbl">Characters</div></div>
+    <div class="stat-item"><div class="stat-val" id="wcNoSpace">0</div><div class="stat-lbl">No Spaces</div></div>
+    <div class="stat-item"><div class="stat-val" id="wcLines">0</div><div class="stat-lbl">Lines</div></div>
+    <div class="stat-item"><div class="stat-val" id="wcSents">0</div><div class="stat-lbl">Sentences</div></div>
+    <div class="stat-item"><div class="stat-val" id="wcParas">0</div><div class="stat-lbl">Paragraphs</div></div>
+  </div>
+  <button class="btn btn-secondary mt-12" onclick="document.getElementById('wcText').value='';updateWordCount();" style="width:100%;">
+    <i class="fa fa-trash"></i> Clear
+  </button>
+</div>`;
+}
+function updateWordCount() {
+  const txt = document.getElementById('wcText').value;
+  const words = txt.trim()===''?0:txt.trim().split(/\s+/).length;
+  document.getElementById('wcWords').textContent = words;
+  document.getElementById('wcChars').textContent = txt.length;
+  document.getElementById('wcNoSpace').textContent = txt.replace(/\s/g,'').length;
+  document.getElementById('wcLines').textContent = txt.split('\n').filter(l=>l.trim()).length || (txt.trim()?1:0);
+  document.getElementById('wcSents').textContent = (txt.match(/[.!?]+/g)||[]).length;
+  document.getElementById('wcParas').textContent = txt.split(/\n\s*\n/).filter(p=>p.trim()).length || (txt.trim()?1:0);
+}
+
+/* ==========================================
+   CASE CONVERTER
+   ========================================== */
+function buildCaseConv() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-text-height" style="color:var(--accent2)"></i> Text Case Converter</div>
+  <div class="panel-sub">Convert text to any case style</div>
+  <textarea class="text-area" id="caseIn" placeholder="Enter your text here..." style="min-height:120px;"></textarea>
+  <div class="btn-group mt-12">
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('upper')">UPPER</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('lower')">lower</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('title')">Title</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('sentence')">Sentence</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('camel')">camelCase</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('snake')">snake_case</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('kebab')">kebab-case</button>
+    <button class="btn btn-secondary btn-sm" onclick="convertCase('alter')">aLtErNaTe</button>
+  </div>
+  <div class="glass-panel" id="caseOut" style="display:none;margin-top:12px;padding:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div class="result-label" id="caseModeLbl">Result</div>
+      <button class="btn btn-secondary btn-sm" onclick="copyCaseResult()"><i class="fa fa-copy"></i> Copy</button>
+    </div>
+    <div id="caseResult" style="font-size:0.9rem;color:var(--text-primary);word-break:break-all;line-height:1.6;"></div>
+  </div>
+</div>`;
+}
+function convertCase(mode) {
+  const txt = document.getElementById('caseIn').value;
+  if (!txt.trim()) { showToast('Enter some text first','error','fa-exclamation-circle'); return; }
+  let result;
+  const labels = {upper:'UPPERCASE',lower:'lowercase',title:'Title Case',sentence:'Sentence case',camel:'camelCase',snake:'snake_case',kebab:'kebab-case',alter:'aLtErNaTe'};
+  if (mode==='upper') result = txt.toUpperCase();
+  else if (mode==='lower') result = txt.toLowerCase();
+  else if (mode==='title') result = txt.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+  else if (mode==='sentence') result = txt.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g,c=>c.toUpperCase());
+  else if (mode==='camel') result = txt.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g,(_,c)=>c.toUpperCase());
+  else if (mode==='snake') result = txt.toLowerCase().trim().replace(/[^a-zA-Z0-9]+/g,'_');
+  else if (mode==='kebab') result = txt.toLowerCase().trim().replace(/[^a-zA-Z0-9]+/g,'-');
+  else if (mode==='alter') result = txt.split('').map((c,i)=>i%2===0?c.toLowerCase():c.toUpperCase()).join('');
+  document.getElementById('caseResult').textContent = result;
+  document.getElementById('caseModeLbl').textContent = labels[mode];
+  document.getElementById('caseOut').style.display = 'block';
+}
+function copyCaseResult() {
+  navigator.clipboard.writeText(document.getElementById('caseResult').textContent)
+    .then(()=>showToast('Copied to clipboard!','success','fa-copy'))
+    .catch(()=>showToast('Copy failed','error','fa-times'));
+}
+
+/* ==========================================
+   FLASHLIGHT
+   ========================================== */
+function buildFlashlight() {
+  return `
+<div class="glass-panel" style="text-align:center;">
+  <div class="panel-title" style="justify-content:center;"><i class="fa fa-bolt" style="color:var(--accent5)"></i> Flashlight</div>
+  <div class="panel-sub" style="text-align:center;">Toggle screen light</div>
+  <div class="flashlight-btn off" id="flashBtn" onclick="toggleFlash()">
+    <i class="fa fa-bolt" id="flashIcon"></i>
+  </div>
+  <div id="flashStatus" style="font-size:1rem;font-weight:700;color:var(--text-muted);margin-top:8px;">TAP TO TURN ON</div>
+  <p style="font-size:0.75rem;color:var(--text-muted);margin-top:16px;line-height:1.6;">
+    Note: This uses a bright white screen overlay to simulate flashlight.<br>
+    Real torch control requires a native app.
+  </p>
+  <div class="flashlight-overlay" id="flashOverlay"></div>
+</div>`;
+}
+function toggleFlash() {
+  flashOn = !flashOn;
+  const btn = document.getElementById('flashBtn');
+  const overlay = document.getElementById('flashOverlay');
+  const status = document.getElementById('flashStatus');
+  if (flashOn) {
+    btn.className = 'flashlight-btn on';
+    overlay.className = 'flashlight-overlay on';
+    document.body.style.background = 'rgba(255,250,200,0.15)';
+    status.textContent = 'FLASHLIGHT ON';
+    status.style.color = '#fde68a';
+  } else {
+    btn.className = 'flashlight-btn off';
+    overlay.className = 'flashlight-overlay';
+    document.body.style.background = '';
+    status.textContent = 'TAP TO TURN ON';
+    status.style.color = 'var(--text-muted)';
+  }
+}
+
+/* ==========================================
+   BATTERY STATUS
+   ========================================== */
+function buildBattery() {
+  return `
+<div class="glass-panel" style="text-align:center;">
+  <div class="panel-title" style="justify-content:center;"><i class="fa fa-battery-three-quarters" style="color:var(--accent4)"></i> Battery Status</div>
+  <div class="panel-sub" style="text-align:center;">Live battery information</div>
+  <div class="battery-icon-wrap">
+    <svg class="battery-svg" viewBox="0 0 120 60">
+      <rect x="2" y="10" width="104" height="40" rx="8" ry="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3"/>
+      <rect x="106" y="20" width="10" height="20" rx="3" ry="3" fill="rgba(255,255,255,0.2)"/>
+      <rect x="5" y="13" id="battFill" width="0" height="34" rx="6" ry="6" fill="url(#battGrad)"/>
+      <defs>
+        <linearGradient id="battGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6bf0b8"/>
+          <stop offset="100%" stop-color="#6bcff0"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="battery-level-text" id="battPct">—%</div>
+    <div class="battery-status-text" id="battStatus">Checking...</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px;">
+    <div class="stat-item"><div class="stat-val" id="battCharge">—</div><div class="stat-lbl">Charging</div></div>
+    <div class="stat-item"><div class="stat-val" id="battTime">—</div><div class="stat-lbl">Time Remaining</div></div>
+  </div>
+</div>`;
+}
+function initBattery() {
+  if (!navigator.getBattery) {
+    document.getElementById('battStatus').textContent = 'Battery API not supported on this browser.';
+    document.getElementById('battPct').textContent = 'N/A';
+    return;
+  }
+  navigator.getBattery().then(battery => {
+    function update() {
+      const pct = Math.round(battery.level * 100);
+      document.getElementById('battPct').textContent = pct + '%';
+      const fillW = Math.round((pct/100)*98);
+      document.getElementById('battFill').setAttribute('width', fillW);
+      document.getElementById('battCharge').textContent = battery.charging ? 'Yes ⚡' : 'No';
+      if (battery.charging) {
+        document.getElementById('battStatus').textContent = 'Charging...';
+        const t = battery.chargingTime;
+        document.getElementById('battTime').textContent = t===Infinity?'Full':Math.round(t/60)+'min';
+      } else {
+        document.getElementById('battStatus').textContent = pct > 20 ? 'Good' : pct > 10 ? 'Low Battery' : '⚠️ Critical';
+        const t = battery.dischargingTime;
+        document.getElementById('battTime').textContent = t===Infinity?'—':Math.round(t/60)+'min';
+      }
+    }
+    update();
+    battery.addEventListener('chargingchange', update);
+    battery.addEventListener('levelchange', update);
+  });
+}
+
+/* ==========================================
+   PASSWORD GENERATOR
+   ========================================== */
+function buildPassGen() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-key" style="color:var(--accent1)"></i> Password Generator</div>
+  <div class="panel-sub">Generate secure, random passwords</div>
+  <div style="position:relative;">
+    <div class="pass-display" id="passDisplay">Click Generate to create password</div>
+    <button class="copy-btn" onclick="copyPass()"><i class="fa fa-copy"></i></button>
+  </div>
+  <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%;background:#f87171;"></div></div>
+  <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);margin-bottom:12px;" id="strengthLbl">—</div>
+  <div class="input-group">
+    <label class="input-label">Password Length: <span id="lenVal">16</span></label>
+    <div class="range-wrap">
+      <span style="font-size:0.7rem;color:var(--text-muted)">4</span>
+      <input type="range" min="4" max="64" value="16" id="passLen" oninput="document.getElementById('lenVal').textContent=this.value">
+      <span style="font-size:0.7rem;color:var(--text-muted)">64</span>
+    </div>
+  </div>
+  <div class="checkbox-group">
+    <label class="checkbox-item"><input type="checkbox" id="passUpper" checked> Uppercase (A-Z)</label>
+    <label class="checkbox-item"><input type="checkbox" id="passLower" checked> Lowercase (a-z)</label>
+    <label class="checkbox-item"><input type="checkbox" id="passNums" checked> Numbers (0-9)</label>
+    <label class="checkbox-item"><input type="checkbox" id="passSyms"> Symbols (!@#$)</label>
+  </div>
+  <button class="btn btn-primary mt-12" onclick="generatePass()"><i class="fa fa-rotate"></i> Generate Password</button>
+</div>`;
+}
+function generatePass() {
+  const len = parseInt(document.getElementById('passLen').value);
+  let chars = '';
+  if (document.getElementById('passUpper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (document.getElementById('passLower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (document.getElementById('passNums').checked) chars += '0123456789';
+  if (document.getElementById('passSyms').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) { showToast('Select at least one character type','error','fa-exclamation-circle'); return; }
+  let pass = '';
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  arr.forEach(n => pass += chars[n % chars.length]);
+  document.getElementById('passDisplay').textContent = pass;
+  // Strength
+  let strength = 0;
+  if (len >= 8) strength++;
+  if (len >= 12) strength++;
+  if (len >= 16) strength++;
+  if (document.getElementById('passSyms').checked) strength++;
+  if (document.getElementById('passUpper').checked && document.getElementById('passLower').checked) strength++;
+  const levels = [{w:'20%',c:'#f87171',l:'Weak'},{w:'40%',c:'#fb923c',l:'Fair'},{w:'60%',c:'#fbbf24',l:'Moderate'},{w:'80%',c:'#a3e635',l:'Strong'},{w:'100%',c:'#34d399',l:'Very Strong'}];
+  const lvl = levels[Math.min(strength,4)];
+  document.getElementById('strengthFill').style.width = lvl.w;
+  document.getElementById('strengthFill').style.background = lvl.c;
+  document.getElementById('strengthLbl').textContent = '🔐 Strength: ' + lvl.l;
+  document.getElementById('strengthLbl').style.color = lvl.c;
+}
+function copyPass() {
+  const txt = document.getElementById('passDisplay').textContent;
+  if (txt==='Click Generate to create password') return;
+  navigator.clipboard.writeText(txt)
+    .then(()=>showToast('Password copied!','success','fa-copy'))
+    .catch(()=>showToast('Copy failed','error','fa-times'));
+}
+
+/* ==========================================
+   QR GENERATOR
+   ========================================== */
+function buildQRGen() {
+  return `
+<div class="glass-panel">
+  <div class="panel-title"><i class="fa fa-qrcode" style="color:var(--accent3)"></i> QR Code Generator</div>
+  <div class="panel-sub">Enter text or URL to generate a QR code</div>
+  <div class="input-group">
+    <label class="input-label">Content</label>
+    <textarea class="text-area" id="qrInput" placeholder="https://example.com or any text..." style="min-height:80px;"></textarea>
+  </div>
+  <div class="input-row">
+    <div class="input-group">
+      <label class="input-label">Size (px)</label>
+      <select class="input-field" id="qrSize"><option value="150">150</option><option value="200" selected>200</option><option value="250">250</option><option value="300">300</option></select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Color</label>
+      <select class="input-field" id="qrColor"><option value="000000">Black</option><option value="7c6af7">Purple</option><option value="f06baa">Pink</option><option value="22d3ee">Cyan</option></select>
+    </div>
+  </div>
+  <button class="btn btn-primary" onclick="genQR()"><i class="fa fa-qrcode"></i> Generate QR</button>
+  <div class="result-box" id="qrResult">
+    <div class="qr-container"><img id="qrImg" src="" alt="QR Code"></div>
+    <button class="btn btn-secondary mt-12" onclick="downloadQR()" style="width:100%;"><i class="fa fa-download"></i> Download QR</button>
+  </div>
+</div>`;
+}
+function genQR() {
+  const txt = document.getElementById('qrInput').value.trim();
+  if (!txt) { showToast('Enter some text or URL','error','fa-exclamation-circle'); return; }
+  const size = document.getElementById('qrSize').value;
+  const color = document.getElementById('qrColor').value;
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(txt)}&color=${color}&bgcolor=FFFFFF`;
+  document.getElementById('qrImg').src = url;
+  document.getElementById('qrResult').classList.add('show');
+  showToast('QR Code generated!','success','fa-qrcode');
+}
+function downloadQR() {
+  const img = document.getElementById('qrImg');
+  if (!img.src) return;
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'qrcode.png';
+  a.click();
+}
+
+/* ==========================================
+   QR SCANNER (Simulated)
+   ========================================== */
+function buildQRScan() {
+  return `
+<div class="glass-panel" style="text-align:center;">
+  <div class="panel-title" style="justify-content:center;"><i class="fa fa-camera" style="color:var(--accent2)"></i> QR Code Scanner</div>
+  <div class="panel-sub" style="text-align:center;">Point camera at a QR code</div>
+  <div class="qr-scanner-mock">
+    <div class="qr-scan-line"></div>
+    <div class="qr-corners"></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+      <i class="fa fa-qrcode" style="font-size:2.5rem;color:rgba(255,255,255,0.15);"></i>
+    </div>
+  </div>
+
+  <div class="input-group" style="text-align:left;">
+    <label class="input-label">Or paste QR data / URL here</label>
+    <input class="input-field" type="text" id="qrManual" placeholder="Paste scanned content...">
+  </div>
+  <button class="btn btn-primary" onclick="handleQRScan()"><i class="fa fa-check"></i> Open / Use Content</button>
+  <div class="result-box" id="qrScanResult">
+    <div class="result-label">Scanned Content</div>
+    <div class="result-value" id="qrScanVal" style="font-size:0.9rem;word-break:break-all;"></div>
+    <button class="btn btn-secondary btn-sm mt-8" onclick="copyQRScan()"><i class="fa fa-copy"></i> Copy</button>
+  </div>
+</div>`;
+}
+function handleQRScan() {
+  const val = document.getElementById('qrManual').value.trim();
+  if (!val) { showToast('Paste some content first','error','fa-exclamation-circle'); return; }
+  document.getElementById('qrScanVal').textContent = val;
+  document.getElementById('qrScanResult').classList.add('show');
+  if (val.startsWith('http')) {
+    setTimeout(()=>{ if(confirm('Open URL: '+val+'?')) window.open(val,'_blank'); },300);
+  }
+}
+function copyQRScan() {
+  navigator.clipboard.writeText(document.getElementById('qrScanVal').textContent)
+    .then(()=>showToast('Copied!','success','fa-copy'));
+}
+
+/* ==========================================
+   STOPWATCH
+   ========================================== */
+function buildStopwatch() {
+  return `
+<div class="glass-panel" style="text-align:center;">
+  <div class="panel-title" style="justify-content:center;"><i class="fa fa-stopwatch" style="color:var(--accent4)"></i> Stopwatch</div>
+  <div class="time-display" id="swDisplay">00:00<span class="ms">.000</span></div>
+  <div class="btn-group" style="justify-content:center;margin-bottom:16px;">
+    <button class="btn btn-primary" id="swStartBtn" onclick="toggleStopwatch()"><i class="fa fa-play"></i> Start</button>
+    <button class="btn btn-secondary" onclick="lapStopwatch()"><i class="fa fa-flag"></i> Lap</button>
+    <button class="btn btn-secondary" onclick="resetStopwatch()"><i class="fa fa-rotate-left"></i> Reset</button>
+  </div>
+  <div class="timer-laps" id="swLaps"></div>
+</div>`;
+}
+function toggleStopwatch() {
+  if (swRunning) {
+    clearInterval(stopwatchInterval);
+    swRunning = false;
+    document.getElementById('swStartBtn').innerHTML = '<i class="fa fa-play"></i> Start';
+  } else {
+    const start = Date.now() - stopwatchMs;
+    stopwatchInterval = setInterval(()=>{
+      stopwatchMs = Date.now()-start;
+      updateSwDisplay();
+    },13);
+    swRunning = true;
+    document.getElementById('swStartBtn').innerHTML = '<i class="fa fa-pause"></i> Pause';
+  }
+}
+function updateSwDisplay() {
+  const ms = stopwatchMs;
+  const m = Math.floor(ms/60000);
+  const s = Math.floor((ms%60000)/1000);
+  const ms3 = ms%1000;
+  document.getElementById('swDisplay').innerHTML =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<span class="ms">.${String(ms3).padStart(3,'0')}</span>`;
+}
+let lapCount = 0;
+function lapStopwatch() {
+  if (!swRunning) return;
+  lapCount++;
+  const ms = stopwatchMs;
+  const m = Math.floor(ms/60000);
+  const s = Math.floor((ms%60000)/1000);
+  const ms3 = ms%1000;
+  const time = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms3).padStart(3,'0')}`;
+  const laps = document.getElementById('swLaps');
+  const item = document.createElement('div');
+  item.className = 'lap-item';
+  item.innerHTML = `<span>Lap ${lapCount}</span><span>${time}</span>`;
+  laps.insertBefore(item, laps.firstChild);
+}
+function resetStopwatch() {
+  clearInterval(stopwatchInterval);
+  swRunning = false; stopwatchMs = 0; lapCount = 0;
+  const el = document.getElementById('swDisplay');
+  if (el) el.innerHTML = '00:00<span class="ms">.000</span>';
+  const laps = document.getElementById('swLaps');
+  if (laps) laps.innerHTML = '';
+  const btn = document.getElementById('swStartBtn');
+  if (btn) btn.innerHTML = '<i class="fa fa-play"></i> Start';
+}
+
+/* ==========================================
+   COUNTDOWN TIMER
+   ========================================== */
+function buildTimer() {
+  return `
+<div class="glass-panel" style="text-align:center;">
+  <div class="panel-title" style="justify-content:center;"><i class="fa fa-hourglass-half" style="color:var(--accent1)"></i> Countdown Timer</div>
+  <div class="timer-inputs" id="timerInputs">
+    <div class="timer-input-box"><input type="number" id="timerH" min="0" max="99" value="0" placeholder="00"><span>Hours</span></div>
+    <div style="font-size:2rem;font-weight:700;color:var(--text-muted);padding-top:8px;">:</div>
+    <div class="timer-input-box"><input type="number" id="timerM" min="0" max="59" value="5" placeholder="00"><span>Minutes</span></div>
+    <div style="font-size:2rem;font-weight:700;color:var(--text-muted);padding-top:8px;">:</div>
+    <div class="timer-input-box"><input type="number" id="timerS" min="0" max="59" value="0" placeholder="00"><span>Seconds</span></div>
+  </div>
+  <div class="time-display" id="timerDisplay" style="display:none;">00:05<span class="ms" style="font-size:1rem;">:00</span></div>
+  <div class="btn-group" style="justify-content:center;margin-bottom:12px;">
+    <button class="btn btn-primary" id="timerStartBtn" onclick="startTimer()"><i class="fa fa-play"></i> Start</button>
+    <button class="btn btn-secondary" onclick="pauseTimer()"><i class="fa fa-pause"></i> Pause</button>
+    <button class="btn btn-secondary" onclick="resetTimer()"><i class="fa fa-rotate-left"></i> Reset</button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px;">
+    ${[['1 min',60],['5 min',300],['10 min',600],['15 min',900],['30 min',1800],['1 hr',3600]].map(([l,s])=>`<button class="btn btn-secondary btn-sm" onclick="setTimer(${s})">${l}</button>`).join('')}
+  </div>
+</div>`;
+}
+function setTimer(secs) {
+  timerRemaining = secs;
+  document.getElementById('timerH').value = Math.floor(secs/3600);
+  document.getElementById('timerM').value = Math.floor((secs%3600)/60);
+  document.getElementById('timerS').value = secs%60;
+  updateTimerDisplay();
+}
+function startTimer() {
+  const h = parseInt(document.getElementById('timerH').value)||0;
+  const m = parseInt(document.getElementById('timerM').value)||0;
+  const s = parseInt(document.getElementById('timerS').value)||0;
+  if (!timerRunning) timerRemaining = h*3600+m*60+s;
+  if (timerRemaining <= 0) { showToast('Set a time first','error','fa-exclamation-circle'); return; }
+  clearInterval(timerInterval);
+  timerRunning = true;
+  document.getElementById('timerInputs').style.display = 'none';
+  document.getElementById('timerDisplay').style.display = 'block';
+  timerInterval = setInterval(()=>{
+    timerRemaining--;
+    updateTimerDisplay();
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      showToast('⏰ Timer finished!','success','fa-bell');
+      document.getElementById('timerDisplay').style.color = 'var(--accent2)';
+      try { const ctx=new AudioContext(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=880; g.gain.setValueAtTime(0.5,0); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1); o.start(); o.stop(ctx.currentTime+1); } catch(e){}
+    }
+  },1000);
+}
+function pauseTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    showToast('Timer paused','info','fa-pause');
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = 0;
+  document.getElementById('timerH').value = 0;
+  document.getElementById('timerM').value = 5;
+  document.getElementById('timerS').value = 0;
+  document.getElementById('timerInputs').style.display = 'flex';
+  document.getElementById('timerDisplay').style.display = 'none';
+  document.getElementById('timerDisplay').style.color = '';
+}
+function updateTimerDisplay() {
+  const h = Math.floor(timerRemaining/3600);
+  const m = Math.floor((timerRemaining%3600)/60);
+  const s = timerRemaining%60;
+  const el = document.getElementById('timerDisplay');
+  if (el) el.innerHTML = `${h>0?String(h).padStart(2,'0')+':':''}${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+/* ==========================================
+   INIT TOOL (post-render hooks)
+   ========================================== */
+function initTool(id) {
+  if (id === 'conv-unit') { setTimeout(initUnitConv, 50); }
+  if (id === 'util-batt') { setTimeout(initBattery, 50); }
+}
+</script>
+</body>
+</html>
